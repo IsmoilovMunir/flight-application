@@ -32,6 +32,15 @@ public class TicketDao {
             from ticket
             where id = ?
             """;
+    private static final String UPDATE_SQL = """
+            update ticket
+            set passport_no = ?, 
+            passenger_name = ?, 
+            flight_id = ?, 
+            seat_no=?, 
+            cost=?
+            where id =?
+            """;
 
     public Ticket save(Ticket ticket) {
         try (var connection = ConnectionManager.get();
@@ -96,6 +105,23 @@ public class TicketDao {
             throw new RuntimeException(e);
         }
 
+    }
+
+    public boolean update(Ticket ticket) {
+
+        try (var connection = ConnectionManager.get();
+             var statment = connection.prepareStatement(UPDATE_SQL)) {
+            statment.setString(1, ticket.getPassportNo());
+            statment.setString(2, ticket.getPassengerName());
+            statment.setLong(3,ticket.getFlightId());
+            statment.setString(4, ticket.getSeatNo());
+            statment.setBigDecimal(5, ticket.getCast());
+            statment.setLong(6, ticket.getId());
+
+            return statment.executeUpdate() > 0;
+        } catch (SQLException e) {
+            throw new RuntimeException(e);
+        }
     }
 
     public Ticket buildTicket(ResultSet result) throws SQLException {
