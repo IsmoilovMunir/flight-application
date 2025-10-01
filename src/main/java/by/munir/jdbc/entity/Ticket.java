@@ -14,13 +14,13 @@ public class Ticket {
     public Ticket() {
     }
 
-    public Ticket(BigDecimal cast, Long flightId, Long id, String passengerName, String passportNo, String seatNo) {
-        this.cast = cast;
-        this.flightId = flightId;
+    public Ticket(Long id, String passportNo, String passengerName, Long flightId, String seatNo, BigDecimal cast) {
         this.id = id;
-        this.passengerName = passengerName;
         this.passportNo = passportNo;
+        this.passengerName = passengerName;
+        this.flightId = flightId;
         this.seatNo = seatNo;
+        this.cast = cast;
     }
 
     public BigDecimal getCast() {
@@ -74,12 +74,12 @@ public class Ticket {
     @Override
     public String toString() {
         return "Ticket{" +
-               "cast=" + cast +
-               ", flightId=" + flightId +
-               ", id=" + id +
-               ", passengerName='" + passengerName + '\'' +
+               "id=" + id +
                ", passportNo='" + passportNo + '\'' +
+               ", passengerName='" + passengerName + '\'' +
+               ", flightId=" + flightId +
                ", seatNo='" + seatNo + '\'' +
+               ", cast=" + cast +
                '}';
     }
 
