@@ -95,7 +95,6 @@ public class JdbcRunner {
             }
         } catch (SQLException e) {
             throw new RuntimeException(e);
-
         }
     }
 }
