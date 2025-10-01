@@ -200,7 +200,10 @@ left join ranked_routes r2 on r1.rank = r2.rank - 1
 left join ranked_routes r3 on r1.rank  = r3.rank + 1
 order by r1.cost desc;
 
-    select * from ticket;]]></console>
+    select * from ticket;
+
+select * from ticket
+where id = 10;]]></console>
     </connection>
   </component>
   <component name="DBNavigator.Project.DatabaseEditorStateManager">
