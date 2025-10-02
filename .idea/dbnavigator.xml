@@ -203,7 +203,9 @@ order by r1.cost desc;
     select * from ticket;
 
 select * from ticket
-where id = 10;]]></console>
+where id = 10;
+
+select * from flight;]]></console>
     </connection>
   </component>
   <component name="DBNavigator.Project.DatabaseEditorStateManager">
@@ -219,6 +221,7 @@ where id = 10;]]></console>
   </component>
   <component name="DBNavigator.Project.DatasetFilterManager">
     <filter-actions connection-id="8f90824a-8650-4f1a-a92c-7914b19b6d6a" dataset="public.airport" active-filter-id="" />
+    <filter-actions connection-id="8f90824a-8650-4f1a-a92c-7914b19b6d6a" dataset="public.flight" active-filter-id="" />
     <filter-actions connection-id="8f90824a-8650-4f1a-a92c-7914b19b6d6a" dataset="public.seat" active-filter-id="" />
     <filter-actions connection-id="8f90824a-8650-4f1a-a92c-7914b19b6d6a" dataset="public.ticket" active-filter-id="48ea95b2-b684-47d3-938c-64c69a972e83">
       <filter id="48ea95b2-b684-47d3-938c-64c69a972e83" name="Filter" temporary="false" custom-name="false" type="basic" join-type="AND">

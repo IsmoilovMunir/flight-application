@@ -5,17 +5,15 @@ import by.munir.jdbc.entity.Ticket;
 import by.munir.jdbc.exception.DaoExceptio;
 import by.munir.jdbc.utils.ConnectionManager;
 
-import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Statement;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Objects;
 import java.util.Optional;
 import java.util.stream.Collectors;
 
-public class TicketDao {
+public class TicketDao implements Dao<Long,Ticket>{
     private final static TicketDao INSTANCE = new TicketDao();
     private final static String SAVE_SQL = """
             insert into ticket
