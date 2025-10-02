@@ -15,7 +15,16 @@ public final class ConnectionManager {
     private static ArrayBlockingQueue<Connection> pool;
 
     static {
+        loadDriver();
         initConnectionPool();
+    }
+
+    private static void loadDriver() {
+        try {
+            Class.forName("org.postgresql.Driver");
+        } catch (ClassNotFoundException e) {
+            throw new RuntimeException(e);
+        }
     }
 
     private static void initConnectionPool() {
