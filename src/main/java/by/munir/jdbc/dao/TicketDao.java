@@ -1,6 +1,8 @@
 package by.munir.jdbc.dao;
 
 import by.munir.jdbc.dto.TicketFilter;
+import by.munir.jdbc.entity.Flight;
+import by.munir.jdbc.entity.FlightStatus;
 import by.munir.jdbc.entity.Ticket;
 import by.munir.jdbc.exception.DaoExceptio;
 import by.munir.jdbc.utils.ConnectionManager;
@@ -13,8 +15,9 @@ import java.util.List;
 import java.util.Optional;
 import java.util.stream.Collectors;
 
-public class TicketDao implements Dao<Long,Ticket>{
+public class TicketDao implements Dao<Long, Ticket> {
     private final static TicketDao INSTANCE = new TicketDao();
+    private final FlightDao flightDao = FlightDao.getInstance();
     private final static String SAVE_SQL = """
             insert into ticket
             (passport_no, passenger_name, flight_id, seat_no, cost)
@@ -25,13 +28,13 @@ public class TicketDao implements Dao<Long,Ticket>{
             where id = ?
             """;
     private static final String FIND_ALL_SQL = """
-                        select id, passport_no, passenger_name, flight_id, seat_no, cost
-            from ticket
+            SELECT t.id, t.passport_no, t.passenger_name, t.flight_id, t.seat_no, t.cost,
+            f.flight_no, f.departure_date, f.departure_airport_code, f.arrival_date, f.arrival_airport_code, f.aircraft_id, f.status
+            FROM ticket t
+            JOIN flight f on f.id = t.flight_id
             """;
-    private static final String FIND_BY_ID = """
-            select id, passport_no, passenger_name, flight_id, seat_no, cost 
-            from ticket
-            where id = ?
+    private static final String FIND_BY_ID = FIND_ALL_SQL + """
+            where t.id = ?
             """;
     private static final String UPDATE_SQL = """
             update ticket
@@ -48,7 +51,7 @@ public class TicketDao implements Dao<Long,Ticket>{
              var statement = connection.prepareStatement(SAVE_SQL, Statement.RETURN_GENERATED_KEYS)) {
             statement.setString(1, ticket.getPassportNo());
             statement.setString(2, ticket.getPassengerName());
-            statement.setLong(3, ticket.getFlightId());
+            statement.setLong(3, ticket.getFlight().getId());
             statement.setString(4, ticket.getSeatNo());
             statement.setBigDecimal(5, ticket.getCast());
 
@@ -103,12 +106,12 @@ public class TicketDao implements Dao<Long,Ticket>{
         }
         parameters.add(filter.limit());
         parameters.add(filter.offset());
-       var where =  whereSql.stream().collect(Collectors.joining(
+        var where = whereSql.stream().collect(Collectors.joining(
                 " AND ",
                 parameters.size() > 2 ? " WHERE " : " ",
                 " LIMIT ? OFFSET ? "
         ));
-        String sql = FIND_ALL_SQL+ where;
+        String sql = FIND_ALL_SQL + where;
         try (var connection = ConnectionManager.get();
              var statement = connection.prepareStatement(sql)) {
             List<Ticket> tickets = new ArrayList<>();
@@ -152,7 +155,7 @@ public class TicketDao implements Dao<Long,Ticket>{
              var statment = connection.prepareStatement(UPDATE_SQL)) {
             statment.setString(1, ticket.getPassportNo());
             statment.setString(2, ticket.getPassengerName());
-            statment.setLong(3, ticket.getFlightId());
+            statment.setLong(3, ticket.getFlight().getId());
             statment.setString(4, ticket.getSeatNo());
             statment.setBigDecimal(5, ticket.getCast());
             statment.setLong(6, ticket.getId());
@@ -164,10 +167,14 @@ public class TicketDao implements Dao<Long,Ticket>{
     }
 
     public Ticket buildTicket(ResultSet result) throws SQLException {
+//
         return new Ticket(result.getLong("id"),
                 result.getString("passport_no"),
                 result.getString("passenger_name"),
-                result.getLong("flight_id"),
+                flightDao.findById(
+                                result.getLong("flight_id"),
+                                result.getStatement().getConnection())
+                         .orElse(null),
                 result.getString("seat_no"),
                 result.getBigDecimal("cost")
         );

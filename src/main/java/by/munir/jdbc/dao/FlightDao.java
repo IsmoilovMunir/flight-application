@@ -5,6 +5,7 @@ import by.munir.jdbc.entity.FlightStatus;
 import by.munir.jdbc.exception.DaoExceptio;
 import by.munir.jdbc.utils.ConnectionManager;
 
+import java.sql.Connection;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Timestamp;
@@ -30,9 +31,7 @@ public class FlightDao implements Dao<Long, Flight> {
             where id = ?
             """;
 
-    public static final String FIND_BY_ID_SQL = """
-            SELECT id, flight_no, departure_date, departure_airport_code, arrival_date, arrival_airport_code, aircraft_id, status
-            from flight
+    public static final String FIND_BY_ID_SQL = FIND_ALL_SQL + """
             where id =?
             """;
     public static final String UPDATE_SQL = """
@@ -91,8 +90,16 @@ public class FlightDao implements Dao<Long, Flight> {
 
     @Override
     public Optional<Flight> findById(Long id) {
-        try (var connection = ConnectionManager.get();
-             var statement = connection.prepareStatement(FIND_BY_ID_SQL)) {
+        try (var connection = ConnectionManager.get()) {
+           return findById(id, connection);
+        } catch (SQLException e) {
+            throw new RuntimeException(e);
+        }
+    }
+
+
+    public Optional<Flight> findById(Long id, Connection connection) {
+        try (var statement = connection.prepareStatement(FIND_BY_ID_SQL)) {
             statement.setLong(1, id);
             var result = statement.executeQuery();
             Flight flight = null;

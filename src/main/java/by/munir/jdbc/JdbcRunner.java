@@ -16,20 +16,9 @@ public class JdbcRunner {
         DateTimeFormatter formatter = DateTimeFormatter.ISO_LOCAL_DATE_TIME;
         LocalDateTime localDateTime = LocalDateTime.parse(dateTimeString, formatter);
      var flightDao = FlightDao.getInstance();
-//     Flight flight = new Flight();
-//        System.out.println(flight);
-//        flight.setFlightNo("MN304");
-//        flight.setDepartureDate(localDateTime);
-//        flight.setDepartureAirportCode("MNK");
-//        flight.setArrivalDate(localDateTime);
-//        flight.setArrivalAirportCode("MSK");
-//        flight.setAircraftId(3);
-//        flight.setStatus(FlightStatus.departed);
-//        System.out.println(flight);
-//        System.out.println(flightDao.findAll());
-//        System.out.println(flightDao.delete(1L));
-
-        System.out.println(flightDao.findById(5l).get());
+        var ticketDao = TicketDao.getInstance();
+        System.out.println(ticketDao.findById(3L).get());
+        System.out.println(flightDao.findById(2L));
 
     }
 
